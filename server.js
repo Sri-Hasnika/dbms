@@ -52,21 +52,27 @@ async function getConnection() {
     throw err;
   }
 }
+function generateUniqueID() {
+  const prefix = "BLG";
+  const randomPart = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  const userId = ${prefix}${randomPart};
+  return userId;
+}
 
 // User Routes
 app.post('/api/register', async (req, res) => {
-  const { fullName, email, phoneNumber, password } = req.body;
+  const { name,email,password,confirmPassword} = req.body;
   const connection = await getConnection();
-
+const UserID=generateUniqueID();
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await connection.execute(
       // `INSERT INTO Users (FullName, Email, PhoneNumber, PasswordHash) 
-      `INSERT INTO Users (name,email,password,confirmpassword) 
+      `INSERT INTO Users (fullName,email,hashedPassword,confirmpassword) 
        VALUES (:1, :2, :3, :4) 
        RETURNING UserID INTO :5`,
       // [fullName, email, phoneNumber, hashedPassword, { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }],
-      [name,email,password,confirmpassword, { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }],
+      [fullName,email,hashedPassword,confirmPassword, { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }],
       
       { autoCommit: true }
     );

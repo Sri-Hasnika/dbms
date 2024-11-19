@@ -139,10 +139,11 @@ const Signup = () => {
 
     try {
       // Use Axios for signup API call
-      const response = await axios.post('http://localhost:3001/api/register', {
+      const response = await axios.post('http://localhost:8000/api/register', {
         email: formData.email,
         password: formData.password,
         name: formData.name,
+        confirmPassword:formData.confirmPassword
       });
 
 
