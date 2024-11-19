@@ -1,0 +1,25 @@
+{
+  "name": "backend-demo",
+  "version": "1.0.0",
+  "description": "A simple backend demo",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hasnika",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
+    "mysql2": "^3.11.4",
+    "oracledb": "^6.7.0"
+  },
+  "devDependencies": {
+    "vite": "^4.5.5"
+  }
+}

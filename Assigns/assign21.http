@@ -1,0 +1,11 @@
+###get request
+get http://localhost:3000
+
+###post request
+post http://localhost:3000/user 
+Content-Type:application/json
+
+{
+    "name":"phani",
+    "age":16
+}

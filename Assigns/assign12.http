@@ -1,0 +1,27 @@
+###create a product(post)
+post http://localhost:3500/product
+Content-Type: application/json
+
+{
+    "id":3,
+    "name":"sonu",
+    "age":22
+}
+###read all products
+get http://localhost:3500/products
+
+###read products by id
+get http://localhost:3500/products/3
+
+###update products 
+put http://localhost:3500/product
+Content-Type: application/json
+
+{
+    "id":1,
+    "name":"suresh kumar",
+    "age":50
+}
+
+###delete a product by id
+delete http://localhost:3500/products/1

@@ -1,0 +1,65 @@
+
+###REQUESTS FROM CLIENT APP
+
+
+###GET req
+get http://localhost:3000/user-api/users
+
+###get a user by id
+get http://localhost:3000/user-api/users/1
+
+###POST req
+post http://localhost:3000/user-api/user
+Content-Type: application/json
+
+{
+    "id":2,
+    "name":"bhyanu",
+    "age":35
+}
+
+
+
+###PUT req
+put http://localhost:3000/user-api/user
+Content-Type: application/json
+
+{
+    "id":1,
+    "name":"vikas kumar",
+    "age":35
+}
+
+
+
+###DELETE req
+delete http://localhost:3000/user-api/users/20
+
+
+
+###PRODUCT reqs
+
+
+get http://localhost:3000/product-api/products
+
+###get a user by id
+get http://localhost:3000/product-api/products/1
+
+###create a user
+post http://localhost:3000/product-api/products 
+Content-Type: application/json
+
+{
+    "id":1,
+    "name":"clothes"
+}
+
+
+###update a product
+put http://localhost:3000/product-api/products
+Content-Type:application/json
+
+{
+    "id":1,
+    "name":"jeans"
+}
