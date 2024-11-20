@@ -124,17 +124,17 @@ const Signup = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    PhoneNumber: '',
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match!');
-      return;
-    }
+    // // Check if passwords match
+    // if (formData.password !== formData.PhoneNumber) {
+    //   toast.error('Passwords do not match!');
+    //   return;
+    // }
     console.log(formData);
 
     try {
@@ -143,16 +143,17 @@ const Signup = () => {
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        confirmPassword:formData.confirmPassword
+        PhoneNumber:formData.PhoneNumber
       });
 
+      console.log(response.data);
 
       // Extract data from Axios response
-      const { token } = response.data;
+      // const { token } = response.data;
 
-      login({ email: formData.email, name: formData.name, token }); // Assuming token is returned
+      login({ email: formData.email, name: formData.name }); // Assuming token is returned
       toast.success('Account created successfully!');
-      navigate('/dashboard');
+      navigate('/login');
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       toast.error(`Signup failed: ${errorMessage}`);
@@ -198,13 +199,13 @@ const Signup = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <label className="block text-sm font-medium text-gray-700">Phone Number</label>
           <input
-            type="password"
+            type="text"
             className="input-field"
-            value={formData.confirmPassword}
+            value={formData.PhoneNumber}
             onChange={(e) =>
-              setFormData({ ...formData, confirmPassword: e.target.value })
+              setFormData({ ...formData, PhoneNumber: e.target.value })
             }
             required
           />

@@ -1,10 +1,31 @@
-import { create } from 'zustand'
+// import { create } from 'zustand';
+
+// const useAuthStore = create((set) => ({
+//   user: null,
+//   isAuthenticated: false,
+//   login: (userData) => set({ user: userData, isAuthenticated: true }),
+//   logout: () => set({ user: null, isAuthenticated: false }),
+// }))
+
+// export default useAuthStore
+import { create } from 'zustand';
 
 const useAuthStore = create((set) => ({
-  user: null,
-  isAuthenticated: false,
-  login: (userData) => set({ user: userData, isAuthenticated: true }),
-  logout: () => set({ user: null, isAuthenticated: false }),
-}))
+  // Initialize the user from localStorage if available
+  user: JSON.parse(localStorage.getItem('user')) || null,
+  isAuthenticated: !!localStorage.getItem('user'), // Set true if user exists in localStorage
 
-export default useAuthStore
+  // Login function
+  login: (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData)); // Store user data in localStorage
+    set({ user: userData, isAuthenticated: true });
+  },
+
+  // Logout function
+  logout: () => {
+    localStorage.removeItem('user'); // Remove user data from localStorage
+    set({ user: null, isAuthenticated: false });
+  },
+}));
+
+export default useAuthStore;
