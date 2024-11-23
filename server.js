@@ -196,6 +196,133 @@ app.post('/api/trips', authenticateToken, async (req, res) => {
     await connection.close()
   }
 })
+// Destination Routes
+app.get('/api/destinations', authenticateToken, async (req, res) => {
+  const { category } = req.query;
+  const connection = await getConnection();
+
+  try {
+    let query = `SELECT DestinationID as id, Name, Description, Category, ImageURL FROM Destinations`;
+    const params = [];
+
+    if (category) {
+      query += ` WHERE Category = :category`;
+      params.push(category);
+    }
+
+    const result = await connection.execute(query, params);
+
+    const destinations = result.rows.map((row) => ({
+      id: row[0],
+      name: row[1],
+      description: row[2],
+      category: row[3],
+      imageUrl: row[4],
+    }));
+
+    res.json(destinations);
+  } catch (err) {
+    console.error('Error fetching destinations:', err);
+    res.status(500).json({ error: 'Error fetching destinations' });
+  } finally {
+    await connection.close();
+  }
+});
+
+// Travel Statistics Route
+app.get('/api/travel-stats', authenticateToken, async (req, res) => {
+  const connection = await getConnection();
+
+  try {
+    // Query the database for the travel statistics (you can modify this based on your schema)
+    const result = await connection.execute(
+      `SELECT COUNT(*) AS totalTrips, SUM(Distance) AS totalDistance, 
+        COUNT(DISTINCT Country) AS countriesVisited, 
+        COUNT(DISTINCT City) AS citiesVisited, 
+        SUM(HoursSpent) AS hoursTraveled, 
+        AVG(Duration) AS avgTripDuration
+       FROM TravelStats
+       WHERE UserID = :userId`, 
+      [req.user.userId]
+    );
+
+    // Assuming you have columns for trips and distance, this query returns aggregated values.
+    const stats = result.rows[0];
+    
+    res.json({
+      trips: stats.TOTALTRIPS,
+      totalDistance: stats.TOTALDISTANCE,
+      countriesVisited: stats.COUNTRIESVISITED,
+      citiesVisited: stats.CITIESVISITED,
+      hoursTraveled: stats.HOURSTRAVELED,
+      avgTripDuration: stats.AVGTRIPDURATION
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    await connection.close();
+  }
+});
+
+// Settings Routes
+app.get('/api/settings', authenticateToken, async (req, res) => {
+  const connection = await getConnection();
+
+  try {
+    const result = await connection.execute(
+      `SELECT Notifications, DarkMode, Language 
+       FROM UserSettings WHERE UserID = :userId`,
+      [req.user.userId]
+    );
+
+    if (result.rows.length === 0) {
+      // Return default settings if no record is found
+      return res.json({
+        notifications: true,
+        darkMode: false,
+        language: 'English',
+      });
+    }
+
+    const [notifications, darkMode, language] = result.rows[0];
+    res.json({ notifications: !!notifications, darkMode: !!darkMode, language });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    await connection.close();
+  }
+});
+
+app.put('/api/settings', authenticateToken, async (req, res) => {
+  const { notifications, darkMode, language } = req.body;
+  const connection = await getConnection();
+
+  try {
+    const result = await connection.execute(
+      `MERGE INTO UserSettings us
+       USING (SELECT :userId AS UserID FROM dual) new_settings
+       ON (us.UserID = new_settings.UserID)
+       WHEN MATCHED THEN
+         UPDATE SET Notifications = :notifications, DarkMode = :darkMode, Language = :language
+       WHEN NOT MATCHED THEN
+         INSERT (UserID, Notifications, DarkMode, Language)
+         VALUES (:userId, :notifications, :darkMode, :language)`,
+      {
+        userId: req.user.userId,
+        notifications: notifications ? 1 : 0,
+        darkMode: darkMode ? 1 : 0,
+        language,
+      },
+      { autoCommit: true }
+    );
+
+    res.json({ message: 'Settings saved successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    await connection.close();
+  }
+});
 
 
 // Emergency Contacts

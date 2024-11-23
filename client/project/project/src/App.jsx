@@ -10,7 +10,10 @@ import TripDetails from './pages/TripDetails'
 import TripForm from './components/TripForm'
 import PrivateRoute from './components/PrivateRoute'
 import Profile from './pages/Profile'
-
+import ExploreDestinations from './pages/ExploreDestinations'
+import DestinationDetails from './pages/DestinationDetails'
+import Settings from './pages/Settings'
+import TravelStats from './pages/TravelStats'
 function App() {
   return (
     <Router>
@@ -38,6 +41,26 @@ function App() {
         <Route path="/trips/:id" element={
           <PrivateRoute>
             <Layout><TripDetails /></Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/destinations" element={
+          <PrivateRoute>
+            <Layout><ExploreDestinations /></Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/destinations/:id" element={
+          <PrivateRoute>
+            <Layout><DestinationDetails /></Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/settings" element={
+          <PrivateRoute>
+            <Layout><Settings /></Layout>
+          </PrivateRoute>
+        } />
+        <Route path="/travel-stats" element={
+          <PrivateRoute>
+            <Layout><TravelStats /></Layout>
           </PrivateRoute>
         } />
       </Routes>
