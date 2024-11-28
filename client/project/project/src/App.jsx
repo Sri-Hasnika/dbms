@@ -38,7 +38,7 @@ function App() {
             <Layout><TripForm /></Layout>
           </PrivateRoute>
         } />
-        <Route path="/trips/:id" element={
+        <Route path="/trips/:tripId" element={
           <PrivateRoute>
             <Layout><TripDetails /></Layout>
           </PrivateRoute>
@@ -48,7 +48,7 @@ function App() {
             <Layout><ExploreDestinations /></Layout>
           </PrivateRoute>
         } />
-        <Route path="/destinations/:id" element={
+        <Route path="/destination/:id" element={
           <PrivateRoute>
             <Layout><DestinationDetails /></Layout>
           </PrivateRoute>

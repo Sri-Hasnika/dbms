@@ -1,24 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const TravelStats = () => {
-  const [trips, setTrips] = useState(15); // Total number of trips
-  const [totalDistance, setTotalDistance] = useState(25000); // Total distance traveled in kilometers
-  const [countriesVisited, setCountriesVisited] = useState(12); // Number of countries visited
-  const [citiesVisited, setCitiesVisited] = useState(35); // Number of cities visited
-  const [hoursTraveled, setHoursTraveled] = useState(500); // Total hours spent traveling
-  const [avgTripDuration, setAvgTripDuration] = useState(5); // Average trip duration in days
+  const [stats, setStats] = useState({
+    trips: 0,
+    countriesVisited: 0,
+    citiesVisited: 0,
+    hoursTraveled: 0,
+    avgTripDuration: 0,
+  }); // Default state for stats
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+  const user = localStorage.getItem("user");
+  const token = JSON.parse(user).token;
+
+  useEffect(() => {
+    const fetchTravelStats = async () => {
+      try {
+        // Make a GET request to the backend to fetch travel stats
+        const response = await axios.get("http://localhost:8000/api/travel-stats", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Use your authentication token
+          },
+        });
+        const data = response.data;
+        console.log(data)
+
+        // Update state with the API data
+        setStats({
+          trips: data.trips,
+          countriesVisited: data.countriesVisited, // Use this for now as countriesVisited
+          hoursTraveled: Math.round(data.hoursTraveled), // Rounded for better readability
+          avgTripDuration: parseFloat(data.avgTripDuration.toFixed(1)), // Round to one decimal place
+        });
+        setLoading(false); // Stop loading
+      } catch (err) {
+        setError("Failed to load travel stats.");
+        setLoading(false); // Stop loading on error
+      }
+    };
+
+    fetchTravelStats();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>; // Show loading indicator
+  }
+
+  if (error) {
+    return <p>{error}</p>; // Show error message if any
+  }
 
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Travel Stats</h1>
 
       <div style={styles.statsContainer}>
-        <StatCard label="Total Trips" value={trips} icon="🧳" />
-        <StatCard label="Total Distance" value={`${totalDistance} km`} icon="🌍" />
-        <StatCard label="Countries Visited" value={countriesVisited} icon="🏞️" />
-        <StatCard label="Cities Visited" value={citiesVisited} icon="🏙️" />
-        <StatCard label="Hours Traveled" value={`${hoursTraveled} hrs`} icon="⏳" />
-        <StatCard label="Average Trip Duration" value={`${avgTripDuration} days`} icon="📅" />
+        <StatCard label="Total Trips" value={stats.trips} icon="🧳" />
+        <StatCard label="Countries Visited" value={stats.countriesVisited} icon="🏞️" />
+        <StatCard label="Hours Traveled" value={`${stats.hoursTraveled} hrs`} icon="⏳" />
+        <StatCard label="Average Trip Duration" value={`${stats.avgTripDuration} days`} icon="📅" />
       </div>
 
       <button style={styles.viewDetailsButton}>View Detailed Stats</button>
@@ -38,7 +80,7 @@ const StatCard = ({ label, value, icon }) => {
   );
 };
 
-// Inline Styles
+// Inline Styles (same as provided)
 const styles = {
   container: {
     padding: "30px",

@@ -74,3 +74,18 @@ Content-Type: application/json
   "PhoneNumber": "1234567890",
   "password": "securepassword"
 }
+
+
+###adding new trip
+post http://localhost:8000/api/trips
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MyIsImVtYWlsIjoiZGV2QGdtYWlsLmNvbSIsImlhdCI6MTczMjM0MTc1Mn0.a31-CDhUQ5Xq0YzWZhLQCAOz4pHna8ToWZnzUC02YSM
+
+{
+  "budget": "21345678",
+  "description": "zefrxctgbihjotfdtfghj",
+  "endDate": "2024-11-30",
+  "location": "sgfhkjl",
+  "startDate": "1111-11-11",
+  "title": "qwertyuio"
+}
