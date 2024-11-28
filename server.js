@@ -385,8 +385,6 @@ app.get('/api/destination/:id', authenticateToken, async (req, res) => {
 });
 
 
-
-
 app.get('/api/destinations', authenticateToken, async (req, res) => {
   const { category } = req.query; // Query parameter for filtering
   const connection = await getConnection();
@@ -426,6 +424,108 @@ app.get('/api/destinations', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Error fetching destinations:', error);
     res.status(500).json({ error: 'Error fetching destinations' });
+  } finally {
+    await connection.close(); // Always close the connection
+  }
+});
+
+app.get('/api/activities/:tripId', authenticateToken, async (req, res) => {
+  const tripId = req.params.tripId;
+  const connection = await getConnection();
+
+  try {
+    // Base query
+    let query = `
+      SELECT 
+        ActivityID AS id,
+        ActivityName AS name,
+        StartTime AS startTime,
+        TripID
+      FROM Activities
+      WHERE TRIPID = :tripid
+    `;
+    
+
+    // Execute the query
+    const result = await connection.execute(query, {
+      tripid: tripId,
+    }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+    // Transform rows into desired format
+    const activities = result.rows.map((row) => ({
+      id: row.ID,
+      name: row.NAME,
+      startTime: row.STARTTIME,
+      tripId: row.TRIPID,
+    }));
+    // console.log(activities);
+    res.json(activities);
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    res.status(500).json({ error: 'Error fetching activities' });
+  } finally {
+    await connection.close(); // Always close the connection
+  }
+});
+
+app.delete('/api/activities/:tripId/:activityId', authenticateToken, async (req, res) => {
+  const { tripId, activityId } = req.params;
+  const connection = await getConnection();
+
+  try {
+    // Delete query
+    const query = `
+      DELETE FROM Activities
+      WHERE ActivityID = :activityId
+        AND TripID = :tripId
+    `;
+
+    // Execute query
+    const result = await connection.execute(query, {
+      activityId:activityId,
+      tripId:tripId,
+    }, { autoCommit: true });
+    // console.log(result)
+
+    if (result.rowsAffected === 0) {
+      return res.status(404).json({ message: 'Activity not found' });
+    }
+
+    res.status(200).json({ message: 'Activity deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting activity:', error.message);
+    res.status(500).json({ error: 'Error deleting activity' });
+  } finally {
+    await connection.close(); // Always close the connection
+  }
+});
+
+app.post('/api/activities/:tripId', authenticateToken, async (req, res) => {
+  const tripId = req.params.tripId;
+  const connection = await getConnection();
+  console.log("server activites: ",req.body,tripId);
+
+
+  try {
+    // Base query
+    let query = `
+      INSERT INTO ACTIVITIES VALUES (:activityId, :tripId, : ActivityName, :startTime)
+    `;
+    
+
+    // Execute the query
+    const result = await connection.execute(query, {
+      activityId: generateUniqueID('ACT'),
+      tripId: tripId,
+      ActivityName: req.body.description,
+      startTime:req.body.time
+    }, { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit:true });
+
+    // console.log(result);
+    res.send({message:"activity posted"});
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    res.status(500).json({ error: 'Error fetching activities' });
   } finally {
     await connection.close(); // Always close the connection
   }

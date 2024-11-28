@@ -171,6 +171,7 @@ const TripDetails = () => {
             },
           }
         );
+        console.log("selectedTrip from trip details",response.data[0]);
         setSelectedTrip(response.data[0]); // Assuming the response is an array with one trip object
         setLoading(false);
       } catch (err) {
@@ -198,7 +199,7 @@ const TripDetails = () => {
   const tabs = [
     
     { name: 'Budget', icon: CurrencyDollarIcon, component: <Budget trip={selectedTrip} /> },
-    { name: 'Itinerary', icon: CalendarIcon, component: <ItineraryTab trip={selectedTrip} /> },
+    { name: 'Itinerary', icon: CalendarIcon, component: <ItineraryTab selectedTrip={selectedTrip} /> },
   ];
 
   return (
