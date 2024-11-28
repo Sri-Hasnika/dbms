@@ -21,10 +21,7 @@ const TripCard = ({ trip }) => {
             <MapPinIcon className="h-5 w-5 mr-2" />
             <span>{trip.location}</span>
           </div>
-          <div className="flex items-center text-gray-600">
-            <UserGroupIcon className="h-5 w-5 mr-2" />
-            <span>{trip.collaborators} collaborators</span>
-          </div>
+          
         </div>
       </Link>
     </motion.div>
