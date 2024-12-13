@@ -19,11 +19,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // // Check if passwords match
-    // if (formData.password !== formData.PhoneNumber) {
-    //   toast.error('Passwords do not match!');
-    //   return;
-    // }
+  
     console.log(formData);
 
     try {

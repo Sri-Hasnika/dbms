@@ -39,8 +39,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-
-
 oracledb.initOracleClient({ libDir: process.env.LIBDIR });
 
 // Database connection helper
